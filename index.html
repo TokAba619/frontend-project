@@ -56,45 +56,47 @@
     login();
   });
 
-  function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-    fetch("https://gcp-bucket-detector-backend-661175673686.us-central1.run.app/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+  fetch("https://gcp-bucket-detector-backend-661175673686.us-central1.run.app/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  })
+    .then((res) => {
+      console.log("Raw response:", res);
+      if (!res.ok) {
+        throw new Error("Login failed");
+      }
+      return res.json();
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Login failed");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (data.access_token) {
-          // Save token, email, and role in localStorage
-          localStorage.setItem("access_token", data.access_token);
-          if (data.email) localStorage.setItem("email", data.email);
-          if (data.role) localStorage.setItem("role", data.role);
+    .then((data) => {
+      console.log("Login success:", data);
+      if (data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
+        if (data.email) localStorage.setItem("email", data.email);
+        if (data.role) localStorage.setItem("role", data.role);
+        
+        window.location.href = "/frontend-project/web.html";  // ✅ full path
+      } else {
+        console.warn("No access token in response.");
+        document.getElementById("error").textContent = "Invalid email or password.";
+      }
+    })
+    .catch((err) => {
+      console.error("Login Error:", err);
+      document.getElementById("error").textContent = "Something went wrong. Try again.";
+    });
+}
 
-          console.log("Login successful, redirecting to web.html...");
-          // Redirect to web.html (use relative path)
-          window.location.href = "./web.html";
-        } else {
-          document.getElementById("error").textContent = "Invalid email or password.";
-        }
-      })
-      .catch((err) => {
-        console.error("Login Error:", err);
-        document.getElementById("error").textContent = "Something went wrong. Try again.";
-      });
-  }
 </script>
 
 
 </body>
 </html>
+
 
