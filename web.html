@@ -490,15 +490,20 @@ button:focus:not(:focus-visible) {
 
   // Step 2: Redirect to login if no token is found
   if (!token) {
-    window.location.href = "index.html";
+    window.location.href = "index.html"; // Use relative path to your login page
   }
 
   // Step 3: Display email and role from localStorage (if available)
   const userEmail = localStorage.getItem("email");
   const userRole = localStorage.getItem("role");
 
-  document.getElementById("user-email").textContent = userEmail || "Unknown";
-  document.getElementById("user-role").textContent = userRole || "Unknown";
+  document.addEventListener("DOMContentLoaded", () => {
+    const emailElement = document.getElementById("user-email");
+    const roleElement = document.getElementById("user-role");
+
+    if (emailElement) emailElement.textContent = userEmail || "Unknown";
+    if (roleElement) roleElement.textContent = userRole || "Unknown";
+  });
 
   // Step 4: Example of fetching protected data from your backend
   function fetchProtectedData() {
@@ -525,9 +530,10 @@ button:focus:not(:focus-visible) {
     });
   }
 
-  // Optional: call this function if you need the data immediately
+  // Optional: call this if needed
   // fetchProtectedData();
 </script>
+
 
 
 
@@ -535,3 +541,4 @@ button:focus:not(:focus-visible) {
   
 
 </html>
+
