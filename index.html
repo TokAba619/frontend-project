@@ -51,52 +51,69 @@
 
     <!-- ✅ Working JavaScript Login -->
   <script>
+  // ✅ Auto-login via Google OAuth redirect
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("token");
+  const email = urlParams.get("email");
+  const role = urlParams.get("role");
+
+  if (token) {
+    localStorage.setItem("access_token", token);
+    if (email) localStorage.setItem("email", email);
+    if (role) localStorage.setItem("role", role);
+
+    // ✅ Redirect to dashboard (web.html)
+    window.location.href = "/frontend-project/web.html";
+  }
+
+  // ✅ Manual login with email & password
   document.getElementById("loginForm").addEventListener("submit", function (event) {
     event.preventDefault();
     login();
   });
 
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-  fetch("https://gcp-bucket-detector-backend-661175673686.us-central1.run.app/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  })
-    .then((res) => {
-      console.log("Raw response:", res);
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
-      return res.json();
+    fetch("https://gcp-bucket-detector-backend-661175673686.us-central1.run.app/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
     })
-    .then((data) => {
-      console.log("Login success:", data);
-      if (data.access_token) {
-        localStorage.setItem("access_token", data.access_token);
-        if (data.email) localStorage.setItem("email", data.email);
-        if (data.role) localStorage.setItem("role", data.role);
-        
-        window.location.href = "/frontend-project/web.html";  // ✅ full path
-      } else {
-        console.warn("No access token in response.");
-        document.getElementById("error").textContent = "Invalid email or password.";
-      }
-    })
-    .catch((err) => {
-      console.error("Login Error:", err);
-      document.getElementById("error").textContent = "Something went wrong. Try again.";
-    });
-}
+      .then((res) => {
+        console.log("Raw response:", res);
+        if (!res.ok) {
+          throw new Error("Login failed");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Login success:", data);
+        if (data.access_token) {
+          localStorage.setItem("access_token", data.access_token);
+          if (data.email) localStorage.setItem("email", data.email);
+          if (data.role) localStorage.setItem("role", data.role);
 
+          window.location.href = "/frontend-project/web.html"; // ✅ Go to protected page
+        } else {
+          console.warn("No access token in response.");
+          document.getElementById("error").textContent = "Invalid email or password.";
+        }
+      })
+      .catch((err) => {
+        console.error("Login Error:", err);
+        document.getElementById("error").textContent = "Something went wrong. Try again.";
+      });
+  }
 </script>
+
 
 
 </body>
 </html>
+
 
 
