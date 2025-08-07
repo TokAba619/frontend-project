@@ -80,8 +80,9 @@
           if (data.email) localStorage.setItem("email", data.email);
           if (data.role) localStorage.setItem("role", data.role);
 
-          // Redirect to web.html
-          window.location.href = "web.html";
+          console.log("Login successful, redirecting to web.html...");
+          // Redirect to web.html (use relative path)
+          window.location.href = "./web.html";
         } else {
           document.getElementById("error").textContent = "Invalid email or password.";
         }
@@ -96,3 +97,4 @@
 
 </body>
 </html>
+
